@@ -28,3 +28,9 @@ export interface Task {
     name: string;
     users: Array<number>;
   }
+
+
+  export interface DeleteTeam extends CreateTeam{
+    usersDelete: Array<number>
+
+  }

@@ -1,5 +1,5 @@
 import { openDB } from '../utils/db'; // Importamos la función que abre la base de datos
-import { Message, CreateTeam, User } from '../types/interfaces';
+import { Message, CreateTeam, User, DeleteTeam } from '../types/interfaces';
 
 //CONTROLLERS GET
 
@@ -24,20 +24,28 @@ export const getAllTeams = async () => {
 };
 
 
-// export const getUserById = async (id: number) => {
-//     try {
-//         const db = await openDB();
-//         const user = await db.get('SELECT * FROM users WHERE user_id = ?', [id]);
-//         if (!user) {
-//             throw new Error('user not found');
-//         }
+export const getTeamById = async (id: number) => {
+    try {
+        const db = await openDB();
+        const team = await db.get('SELECT * FROM teams WHERE team_id = ?', [id]);
 
-//         return user;
-//     } catch (error: any) {
-//         // Lanzamos el error con un mensaje controlado
-//         throw new Error(error.message || 'Failed to retrieve user');
-//     }
-// };
+        if (!team) {
+            throw new Error('Team not found');
+        }
+
+        const usersTeam = await db.all('SELECT * FROM users WHERE team_id = ?', [team.team_id]);
+
+        const teamWithUsers = {
+            team, usersTeam
+        }
+
+        return teamWithUsers;
+
+    } catch (error: any) {
+        // Lanzamos el error con un mensaje controlado
+        throw new Error(error.message || 'Failed to retrieve team');
+    }
+};
 
 //CONTROLER POST
 export const createNewTeam = async (body: CreateTeam): Promise<Message> => {
@@ -81,7 +89,7 @@ export const addUsersToTeam = async (users: Array<number>) => {
       `);
 
         await Promise.all(
-                users.map(async (user) => {
+            users.map(async (user) => {
                 db.run("UPDATE users SET team_id = ? WHERE user_id = ?", [lastTeam.team_id, user])
             })
         );
@@ -96,48 +104,75 @@ export const addUsersToTeam = async (users: Array<number>) => {
 // //CONTROLLER PUT
 
 
-// export const editUser = async (body: User, id: number): Promise<Message> => {
-//     try {
-//         const { name, email, password, role, team_id } = body;
-//         const db = await openDB();
+export const editTeam = async (body: DeleteTeam, id: number): Promise<Message> => {
+    try {
+        const { name, users , usersDelete} = body;
+        const db = await openDB();
 
-//         const response = await db.get('SELECT * FROM users WHERE user_id = ?', [id]);
+        const response = await db.get('SELECT * FROM teams WHERE team_id = ?', [id]);
 
-//         if (!response) {
-//             return { message: `No se encontro usuario con el id:${id}`, status: 400 }
-//         }
-
-//         await db.run(`
-//         UPDATE users SET
-//         name = ?,
-//         email = ?,
-//         password = ?,
-//         role = ?,
-//         team_id = ?
-//         where user_id = ?;
-//         `, [name, email, password, role, team_id, id])
-
-//         return { message: 'Usuario modificado correctamente', status: 200 };
-
-//     } catch (error: any) {
-//         throw new Error(error.message);
-//     }
-// }
-
-// export const deleteUser = async (id: number): Promise<Message> => {
-
-//     const db = await openDB();
-//     const response = await db.get('SELECT * FROM users WHERE user_id = ?', [id]);
-
-//     if (!response) {
-//         return { message: `No se encontro usuario con el id:${id}`, status: 400 }
-//     }
-
-//     await db.run(`
-//         DELETE FROM users where user_id = ?
-//         `, [id]);
-
-//     return { message: `El usuario con el id:${id} fue eliminado correctamente`, status: 200 };
+        if (!response) {
+            return { message: `No se encontro team con el id:${id}`, status: 400 }
+        }
 
 
-// }
+        if (name != null) {
+            await db.run(`
+                UPDATE teams SET
+                name = ?
+                where team_id = ?;
+                `, [name, id])
+        }
+        if (users.length != 0) {
+            Promise.all(users.map(async(user)=>{
+                
+                await db.run(`
+                    UPDATE users SET
+                    team_id = ?
+                     where user_id = ?;
+                    `, [id, user])
+            }))
+            
+        }
+
+        if(usersDelete.length != 0){
+
+            Promise.all(usersDelete.map(async(userToDelete)=>{
+                
+                await db.run(`
+                    UPDATE users SET
+                    team_id = ?
+                     where user_id = ?;
+                    `, [null , userToDelete])
+          }))
+        } 
+
+        return { message: 'team modificado correctamente', status: 200 };
+
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export const deleteTeam = async (id: number): Promise<Message> => {
+
+    const db = await openDB();
+    const response = await db.get('SELECT * FROM teams WHERE team_id = ?', [id]);
+
+    if (!response) {
+        return { message: `No se encontro team con el id:${id}`, status: 400 }
+    }
+
+    await db.run(
+        `
+        UPDATE users SET team_id = ? WHERE team_id = ?;
+        `,[null, id]
+    )
+    await db.run(`
+        DELETE FROM teams where team_id = ?
+        `, [id]);
+
+    return { message: `El equipo con el id:${id} fue eliminado correctamente`, status: 200 };
+
+
+}
