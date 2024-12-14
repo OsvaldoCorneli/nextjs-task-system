@@ -30,7 +30,19 @@ export interface Task {
   }
 
 
-  export interface DeleteTeam extends CreateTeam{
+  export interface DeleteTeam extends CreateTeam{ 
     usersDelete: Array<number>
 
   }
+  
+  export interface Comment{
+    comment: string
+  }
+
+  export interface CommentWithData extends Comment{
+    task_id: number, 
+    user_id: number, 
+    
+  }
+
+ 
