@@ -22,3 +22,9 @@ export interface Task {
     role: string | null;
     team_id: number | null;
   }
+
+
+  export interface CreateTeam{
+    name: string;
+    users: Array<number>;
+  }

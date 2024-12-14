@@ -1,4 +1,4 @@
-import { createTasks, getAllTasks, getUserOrTeamTasks } from '@/controllers/taskController';
+import { createNewTeam, getAllTeams } from '@/controllers/teamController';
 import { NextRequest, NextResponse } from 'next/server'; // Importamos las clases de Next.js
 
 
@@ -8,42 +8,30 @@ export async function GET(request: Request) {
         let response;
         const url = new URL(request.url); // Obtenemos la URL completa
 
-        const queryParamUser = url.searchParams.get('user'); // Obtenemos un parámetro de la query
-        const queryParamTeam = url.searchParams.get('team'); // Obtenemos un parámetro de la query
-
-        if (queryParamUser) {
-            response = await getUserOrTeamTasks(queryParamUser, "user");
-
-        } else if (queryParamTeam) {
-            response = await getUserOrTeamTasks(queryParamTeam, "team");
-
-        } else {
-            response = await getAllTasks();
-        }
+        response = await getAllTeams();
+        
 
         return NextResponse.json({ response });
 
     } catch (error) {
         // Si ocurre un error, lo devolvemos en un mensaje
-        return NextResponse.json({ message: 'Error al obtener las tareas', error }, { status: 500 });
+        return NextResponse.json({ message: 'Error al obtener los equipos', error }, { status: 500 });
     }
 }
 
 
+
 export async function POST(req: NextRequest) {
-    try {
-        
+    try {   
         // Obtenemos los datos del cuerpo de la solicitud
         const data = await req.json();
-        
         // Validación básica para asegurarse de que los campos necesarios estén presentes
-        if (!data.title || !data.description || !data.assigned_to_user || !data.due_date || !data.priority || !data.status) {
+        if (!data.name) {
             return NextResponse.json({ message: 'Faltan datos obligatorios' }, { status: 400 });
-        }
-        
-        // Inserción de la tarea en la base de datos
+        } 
+        // Inserción de team en la base de datos
 
-       await createTasks(data);
+        const response = await createNewTeam(data);
             
 
         // Respondemos con éxito
