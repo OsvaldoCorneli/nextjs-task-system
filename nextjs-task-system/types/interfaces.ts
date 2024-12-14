@@ -1,4 +1,4 @@
-export interface Tasks {
+export interface Task {
     title: string;              // Título de la tarea
     description: string;        // Descripción de la tarea
     assigned_to_user: number;   // ID del usuario asignado
@@ -13,4 +13,12 @@ export interface Tasks {
     message: string;
     status: number
 
+  }
+
+  export interface User{
+    name: string;
+    email: string;
+    password: string;
+    role: string | null;
+    team_id: number | null;
   }

@@ -1,5 +1,4 @@
 import { createTasks, getAllTasks, getUserOrTeamTasks } from '@/controllers/taskController';
-import { Tasks } from '@/types/interfaces';
 import { openDB } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server'; // Importamos las clases de Next.js
 

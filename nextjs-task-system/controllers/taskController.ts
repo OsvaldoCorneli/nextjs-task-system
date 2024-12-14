@@ -1,5 +1,5 @@
 import { openDB } from '../utils/db'; // Importamos la función que abre la base de datos
-import { Tasks, Message } from '../types/interfaces';
+import { Task, Message } from '../types/interfaces';
 
 //CONTROLLERS GET
 
@@ -63,7 +63,7 @@ export const getUserOrTeamTasks = async (id: string, type: string) => {
 //CONTROLER POST
 
 
-export const createTasks = async (body: Tasks): Promise<number> => {
+export const createTasks = async (body: Task): Promise<number> => {
     try {
         const { title, description, assigned_to_user, assigned_to_team, due_date, priority, status } = body;
 
@@ -88,7 +88,7 @@ export const createTasks = async (body: Tasks): Promise<number> => {
 //CONTROLLER PUT
 
 
-export const editTask = async (body: Tasks, id: number): Promise<Message> => {
+export const editTask = async (body: Task, id: number): Promise<Message> => {
     try {
         const db = await openDB();
 

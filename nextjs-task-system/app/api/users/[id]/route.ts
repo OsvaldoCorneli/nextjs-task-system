@@ -1,7 +1,7 @@
-// app/api/tasks/[id]/route.ts
-import { Task } from '@/types/interfaces';
+import { getUserById, editUser, deleteUser } from '@/controllers/userController';
+import { User } from '@/types/interfaces';
 import { NextResponse } from 'next/server';
-import { deleteTask, editTask, getTaskById } from '../../../../controllers/taskController';
+
 
 // Método GET para obtener una tarea por su ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -9,10 +9,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
         const taskId = parseInt(params.id); // Accede al parámetro id desde la URL
         
         // Llamada al controller que maneja la lógica de obtención de la tarea
-        const task = await getTaskById(taskId);
+        const user = await getUserById(taskId);
 
-        return new Response(JSON.stringify(task), { status: 200 }); // Si la tarea es encontrada
-
+        return new Response(JSON.stringify(user), { status: 200 }); // Si la tarea es encontrada
     } catch (error: any) {
         console.error(error); // Puedes registrar el error en los logs para depuración
 
@@ -21,31 +20,29 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-
-
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
     try {
         // Abrimos la base de datos
         const taskId = parseInt(params.id); // Accede al parámetro id desde la URL
-        const data: Task = await req.json();
-        
-        const response = await editTask(data,taskId);
+        const data: User = await req.json();
+        const response = await editUser(data,taskId);
         
         // Respondemos con éxito
         return NextResponse.json(response);
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ message: 'Error al editar la tarea', error }, { status: 500 });
+        return NextResponse.json({ message: 'Error al editar el usuario', error }, { status: 500 });
     }
 
 
 }
+
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     try {
        
         const taskId = parseInt(params.id); // Accede al parámetro id desde la URL
-        const response = await deleteTask(taskId);
+        const response = await deleteUser(taskId);
         
         // Respondemos con éxito
         return NextResponse.json(response);
@@ -56,6 +53,3 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
 
 }
-
-
-
