@@ -20,7 +20,6 @@ export async function GET(request: Request) {
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
-        console.log("data", data);
         // Validación básica para asegurarse de que los campos necesarios estén presentes
         if (!data.name || !data.email || !data.password || !data.role || data.team_id != null) {
             return NextResponse.json({ message: 'Faltan datos obligatorios' }, { status: 400 });

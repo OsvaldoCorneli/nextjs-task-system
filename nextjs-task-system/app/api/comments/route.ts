@@ -18,7 +18,6 @@ export async function GET(request: Request) {
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
-        console.log(data)
         // Validación básica para asegurarse de que los campos necesarios estén presentes
         if (!data.task_id || !data.user_id || !data.comment ) {
             return NextResponse.json({ message: 'Faltan datos obligatorios' }, { status: 400 });
