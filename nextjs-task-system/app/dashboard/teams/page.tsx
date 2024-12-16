@@ -1,5 +1,4 @@
-// app/page.tsx
-// URLs de tus APIs
+import TeamCard from '../../../components/TeamCard'
 const USERS_API = 'http://localhost:3000/api/users';
 const TASKS_API = 'http://localhost:3000/api/tasks';
 const TEAMS_API = 'http://localhost:3000/api/teams';
@@ -14,20 +13,23 @@ async function fetchData(url: string) {
 
 export default async function HomePage() {
   try {
-    // Realizamos las llamadas a las APIs de manera concurrente
+    
     const [teams] = await Promise.all([
       fetchData(TEAMS_API),
     ]);
-    
     return (
       <main>
           <h3>Equipos</h3>
         <section>
-          <ul>
+        
             {teams.response.map((team: any) => (
-              <li key={team.id}>{team.name}</li>
+              <TeamCard
+              team_id={team.team_id}
+              name={team.name}
+              users={team.users}
+              />
             ))}
-          </ul>
+          
         </section>
       </main>
     );

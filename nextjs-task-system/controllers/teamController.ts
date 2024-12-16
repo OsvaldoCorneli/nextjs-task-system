@@ -1,15 +1,11 @@
-import { openDB } from '../utils/db'; // Importamos la función que abre la base de datos
+import { openDB } from '../utils/db'; 
 import { Message, CreateTeam, User, DeleteTeam } from '../types/interfaces';
-
-//CONTROLLERS GET
 
 export const getAllTeams = async () => {
     const db = await openDB();
 
-    // Obtenemos todos los equipos
     const teams = await db.all('SELECT * FROM teams');
 
-    // Agregamos los usuarios a cada equipo
     const teamsWithUsers = await Promise.all(
         teams.map(async (team) => {
             const users = await db.all('SELECT * FROM users WHERE team_id = ?', [team.team_id]);
@@ -42,19 +38,15 @@ export const getTeamById = async (id: number) => {
         return teamWithUsers;
 
     } catch (error: any) {
-        // Lanzamos el error con un mensaje controlado
         throw new Error(error.message || 'Failed to retrieve team');
     }
 };
 
-//CONTROLER POST
 export const createNewTeam = async (body: CreateTeam): Promise<Message> => {
     try {
 
 
         const db = await openDB();
-
-        // Insertamos la tarea en la base de datos
 
         const response = await db.run(
             `INSERT INTO teams (name)
@@ -67,9 +59,6 @@ export const createNewTeam = async (body: CreateTeam): Promise<Message> => {
             responseAddUsers = await addUsersToTeam(body.users);
         }
 
-
-
-        // Retorna el ID de la tarea creada
         return { message: "Team creado correctamente", status: 200 };
 
     } catch (error: any) {
@@ -95,13 +84,10 @@ export const addUsersToTeam = async (users: Array<number>) => {
         );
 
     } catch (error: any) {
-        // Lanzamos el error con un mensaje controlado
         throw new Error(error.message || 'Failed to add users to team');
     }
 
 }
-
-// //CONTROLLER PUT
 
 
 export const editTeam = async (body: DeleteTeam, id: number): Promise<Message> => {

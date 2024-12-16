@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
-const SECRET_KEY = new TextEncoder().encode('your-secret-key'); // Misma clave usada para firmar el JWT
+const SECRET_KEY = new TextEncoder().encode('your-secret-key'); 
 const USERS_API = 'http://localhost:3000/api/users';
 const TASKS_API = 'http://localhost:3000/api/tasks';
 const TEAMS_API = 'http://localhost:3000/api/teams';
@@ -15,7 +15,7 @@ async function fetchData(url: string) {
 }
 
 export default async function Dashboard() {
-  // 1. Obtener las cookies del request
+
   const cookieStore = cookies();
   const token = cookieStore.get('auth_token')?.value;
   const users = (await fetchData(USERS_API))
@@ -41,7 +41,6 @@ export default async function Dashboard() {
     const user = users.response.filter((userFind:any )=>{
           return userFind.email === email;
     })
-    console.log(user)
     if (!user) {
       return <h1>No estás registrado. Por favor, registrarse.</h1>;
     }
@@ -51,18 +50,18 @@ export default async function Dashboard() {
     return (
       <>
       <div>
-          <h2>name: {user[0].name}</h2>
-          <h2>email: {user[0].email}</h2>
-          <h2>role: {user[0].role}</h2>
+          <h2><strong>Name: </strong> {user[0].name}</h2>
+          <h2><strong>Email:  </strong> {user[0].email}</h2>
+          <h2><strong>Role:  </strong> {user[0].role}</h2>
       </div>
       <div>
-          users: {users.response.length}
+      <strong>Users: </strong> {users.response.length}
       </div>
       <div>
-          teams: {teams.response.length}
+      <strong>Teams: </strong>  {teams.response.length}
       </div>
       <div>
-          tasks: {tasks.response.length}
+      <strong>Tasks:  </strong> {tasks.response.length}
       </div>
       </>
     );

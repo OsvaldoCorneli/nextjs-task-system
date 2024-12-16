@@ -1,9 +1,7 @@
-// app/page.tsx
-// URLs de tus APIs
 const TASKS_API = 'http://localhost:3000/api/tasks';
 
 async function fetchData(url: string) {
-  const res = await fetch(url, { cache: 'no-store' }); // Evita cache para obtener siempre datos frescos
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) {
     throw new Error(`Error fetching ${url}: ${res.statusText}`);
   }
@@ -12,7 +10,6 @@ async function fetchData(url: string) {
 
 export default async function HomePage() {
   try {
-    // Realizamos las llamadas a las APIs de manera concurrente
     const [tasks] = await Promise.all([
       fetchData(TASKS_API),
     ]);

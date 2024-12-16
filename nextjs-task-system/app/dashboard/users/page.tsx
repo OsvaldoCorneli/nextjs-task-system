@@ -1,12 +1,10 @@
-// app/page.tsx
 
 import UserCard from "@/components/UsersCard";
 
-// URLs de tus APIs
 const USERS_API = 'http://localhost:3000/api/users';
 
 async function fetchData(url: string) {
-  const res = await fetch(url, { cache: 'no-store' }); // Evita cache para obtener siempre datos frescos
+  const res = await fetch(url, { cache: 'no-store' }); 
   if (!res.ok) {
     throw new Error(`Error fetching ${url}: ${res.statusText}`);
   }

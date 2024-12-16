@@ -3,13 +3,13 @@ import { Comment, CommentWithData, Message } from '../types/interfaces';
 import { userAgent } from 'next/server';
 
 
-//CONTROLLERS GET
+
 
 export const getAllComments = async () => {
 
     
-    const db = await openDB(); // Abrimos la base de datos;
-    const comments = await db.all('SELECT * FROM comments'); // Obtenemos todas las tareas
+    const db = await openDB(); 
+    const comments = await db.all('SELECT * FROM comments'); 
 
    const commentWithUser = Promise.all(comments.map(async(comment)=>{
         const user = await db.all("SELECT * FROM users WHERE user_id = ?",[comment.user_id])
@@ -42,13 +42,13 @@ export const getCommentById = async (id: number) => {
         
         return commentWithUserAndTask; 
     } catch (error: any) {
-        // Lanzamos el error con un mensaje controlado
+    
         throw new Error(error.message || 'Failed to retrieve Comment');
     }
 };
 
 
-// //CONTROLER POST
+
 
 
 export const createComment = async (body: CommentWithData ): Promise<Message> => {
@@ -77,8 +77,6 @@ export const createComment = async (body: CommentWithData ): Promise<Message> =>
     }
 };
 
-
-// //CONTROLLER PUT
 
 
 export const editComment = async (body: Comment, id: number): Promise<Message> => {

@@ -19,7 +19,7 @@ export default function LoginPage() {
     });
 
     if (response.ok) {
-      router.push('/'); // Redirige a una página protegida
+      router.push('/'); 
     } else {
       const { error } = await response.json();
       setError(error || 'Login failed');

@@ -1,12 +1,11 @@
-import { openDB } from '../utils/db'; // Importamos la función que abre la base de datos
+import { openDB } from '../utils/db'; 
 import { Task, Message } from '../types/interfaces';
 
-//CONTROLLERS GET
 
 export const getAllTasks = async () => {
 
-    const db = await openDB(); // Abrimos la base de datos;
-    const tasks = await db.all('SELECT * FROM tasks'); // Obtenemos todas las tareas
+    const db = await openDB();
+    const tasks = await db.all('SELECT * FROM tasks'); 
     return tasks;
 }
 
@@ -18,23 +17,21 @@ export const getTaskById = async (id: number) => {
             throw new Error('Task not found');
         }
 
-        return task;  // Si la tarea existe, la retornamos
+        return task; 
     } catch (error: any) {
-        // Lanzamos el error con un mensaje controlado
+     
         throw new Error(error.message || 'Failed to retrieve task');
     }
 };
 
 export const getUserOrTeamTasks = async (id: string, type: string) => {
     try {
-        // Asegúrate de que el id es un número válido
+     
         const idNumber: number = parseInt(id);
         if (isNaN(idNumber)) {
             throw new Error("El ID proporcionado no es válido.");
         }
         const db = await openDB();
-
-        // Obtén las tareas asignadas al usuario o equipo con el ID proporcionado
 
         let tasks;
         switch (type) {
@@ -48,7 +45,6 @@ export const getUserOrTeamTasks = async (id: string, type: string) => {
                 throw new Error("La solicitud no es User o Team");
         }
 
-        // Si no se encontraron tareas, lanza un error
         if (tasks.length === 0) {
             throw new Error('No se ha encontraron asignacion a esta tarea');
         }
@@ -60,8 +56,6 @@ export const getUserOrTeamTasks = async (id: string, type: string) => {
     }
 };
 
-//CONTROLER POST
-
 
 export const createTasks = async (body: Task): Promise<number> => {
     try {
@@ -69,23 +63,18 @@ export const createTasks = async (body: Task): Promise<number> => {
 
         const db = await openDB();
 
-        // Insertamos la tarea en la base de datos
         const response = await db.run(
             `INSERT INTO tasks (title, description, assigned_to_user, assigned_to_team, due_date, priority, status)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [title, description, assigned_to_user, assigned_to_team, due_date, priority, status]
         );
 
-        // Retorna el ID de la tarea creada
         return response.lastID || 0;
 
     } catch (error: any) {
         throw new Error(error.message);
     }
 };
-
-
-//CONTROLLER PUT
 
 
 export const editTask = async (body: Task, id: number): Promise<Message> => {
