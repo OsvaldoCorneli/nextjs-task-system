@@ -23,6 +23,10 @@ export interface Task {
     team_id: number | null;
   }
 
+  export interface userWithId extends User{
+    user_id: number;
+  }
+
 
   export interface CreateTeam{
     name: string;

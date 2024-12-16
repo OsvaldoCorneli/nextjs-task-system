@@ -53,11 +53,13 @@ export async function middleware(req: NextRequest) {
 // Configuración del middleware para rutas protegidas
 export const config = {
   matcher: [
+    /*
     '/', 
     '/api', 
     '/api/tasks/:path*', 
     '/api/users/:path*', 
     '/api/comments/:path*', 
-    '/api/teams/:path*'
+    '/api/teams/:path*'*/
+    
   ], // Define las rutas que quieres proteger
 };
